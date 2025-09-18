@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아두이노 발표 자료</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #1a202c;
+            color: #f7fafc;
+        }
+        .slide-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .slide {
+            width: 90%;
+            max-width: 1024px;
+            min-height: 600px;
+            background-color: #2d3748;
+            border-radius: 20px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            padding: 3rem;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .slide.active {
+            display: flex;
+        }
+        .slide-content h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .slide-content h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #a0aec0;
+        }
+        .slide-content p, .slide-content li {
+            font-size: 1.125rem;
+            line-height: 1.75rem;
+            margin-bottom: 1rem;
+        }
+        .slide-content ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .slide-content li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .slide-content li::before {
+            content: "•";
+            color: #63b3ed;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+            font-size: 1.5rem;
+        }
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            color: #a0aec0;
+            font-size: 0.875rem;
+        }
+        .nav-button {
+            background-color: #4a5568;
+            color: #cbd5e0;
+            border: none;
+            border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .nav-button:hover {
+            background-color: #63b3ed;
+            color: #1a202c;
+            transform: scale(1.05);
+        }
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100">
+    <div class="slide-container">
+        <!-- Slide 1: Title Page -->
+        <div id="slide-1" class="slide active transition duration-500 ease-in-out transform">
+            <div class="slide-content mt-20">
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-4">
+                    아두이노 기반 기억력 게임: 사이먼 게임
+                </h1>
+                <p class="text-center text-lg sm:text-xl text-gray-400 mb-8">회로 설계 및 코드 분석</p>
+                <div class="text-center text-gray-300">
+                    <p class="text-xl font-bold mt-10">발표자: 7조 남지연, 오시은</p>
+                    <p class="text-xl font-bold mt-2">날짜: 3주차 2차시</p>
+                </div>
+            </div>
+            <div class="footer">
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <!-- Slide 2: Project Introduction -->
+        <div id="slide-2" class="slide transition duration-500 ease-in-out transform">
+            <div class="slide-content">
+                <h2 class="text-3xl font-bold text-blue-300">1. 프로젝트 소개</h2>
+                <p class="mt-4">
+                    '사이먼 게임'은 빛과 소리의 패턴을 기억하고 따라 하는 고전적인 기억력 게임입니다. 이 프로젝트는 바로 이 '사이먼 게임'을 아두이노로 구현한 것으로, 사용자는 아두이노가 제시하는 무작위 순서를 기억하고, 올바른 버튼을 눌러 순서를 재현해야 합니다.
+                </p>
+                <div class="mt-8">
+                    <h2 class="text-2xl font-semibold text-gray-300">주요 목표</h2>
+                    <ul class="mt-2">
+                        <li>사용자에게 무작위 순서 제시 (LED 점등 및 부저 소리).</li>
+                        <li>사용자 입력 확인 및 정오 판별.</li>
+                        <li>성공 또는 실패 시 명확한 피드백 제공.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer">
+                <span class="text-gray-400">페이지 1/5</span>
+                <button onclick="nextSlide()" class="nav-button">다음 ></button>
+            </div>
+        </div>
+
+        <!-- Slide 3: Hardware Components -->
+        <div id="slide-3" class="slide transition duration-500 ease-in-out transform">
+            <div class="slide-content">
+                <h2 class="text-3xl font-bold text-blue-300">2. 하드웨어 구성</h2>
+                <p class="mt-4">
+                    이 게임은 다음의 주요 부품들로 구성됩니다.
+                </p>
+                <ul class="mt-8">
+                    <li>
+                        <span class="font-bold">아두이노 우노:</span> 모든 부품을 제어하는 핵심 마이크로컨트롤러입니다.
+                    </li>
+                    <li>
+                        <span class="font-bold">4색 LED (빨강, 노랑, 초록, 파랑):</span> 시각적 순서를 나타냅니다.
+                    </li>
+                    <li>
+                        <span class="font-bold">버튼 4개:</span> 사용자가 순서를 입력하는 데 사용됩니다.
+                    </li>
+                    <li>
+                        <span class="font-bold">부저:</span> 각 음표와 성공/실패 효과음을 출력합니다.
+                    </li>
+                </ul>
+                <p class="mt-4 text-gray-400 text-sm">
+                    회로 연결은 코드 내의 `LED_PINS`, `BUTTON_PINS`, `BUZZER_PIN` 변수에 따라 구성되었습니다.
+                </p>
+            </div>
+            <div class="footer">
+                <button onclick="prevSlide()" class="nav-button">< 이전</button>
+                <span class="text-gray-400">페이지 2/5</span>
+                <button onclick="nextSlide()" class="nav-button">다음 ></button>
+            </div>
+        </div>
+
+        <!-- Slide 4: Software and Game Logic -->
+        <div id="slide-4" class="slide transition duration-500 ease-in-out transform">
+            <div class="slide-content">
+                <h2 class="text-3xl font-bold text-blue-300">3. 소프트웨어 및 게임 로직</h2>
+                <div class="mt-4">
+                    <h3 class="text-2xl font-semibold text-gray-300 mb-2">게임 상태 (GameState)</h3>
+                    <ul class="mt-2 text-gray-300">
+                        <li><span class="font-bold">READY:</span> 초기화 상태.</li>
+                        <li><span class="font-bold">INTRO:</span> 게임 시작 전 알림 시퀀스.</li>
+                        <li><span class="font-bold">PLAYING:</span> 게임 진행 중, 순서 제시 및 입력 대기.</li>
+                        <li><span class="font-bold">SUCCESS:</span> 정답 시 상태.</li>
+                        <li><span class="font-bold">FAIL:</span> 오답 또는 시간 초과 시 상태.</li>
+                    </ul>
+                </div>
+                <div class="mt-8">
+                    <h3 class="text-2xl font-semibold text-gray-300 mb-2">핵심 함수</h3>
+                    <ul class="mt-2 text-gray-300">
+                        <li><span class="font-bold">randomizeSequence():</span> 게임마다 새로운 무작위 순서 생성.</li>
+                        <li><span class="font-bold">playRandomSequence():</span> 생성된 순서에 따라 LED와 부저를 동작.</li>
+                        <li><span class="font-bold">checkUserInput():</span> 사용자가 누른 버튼과 시스템이 제시한 순서를 비교.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer">
+                <button onclick="prevSlide()" class="nav-button">< 이전</button>
+                <span class="text-gray-400">페이지 3/5</span>
+                <button onclick="nextSlide()" class="nav-button">다음 ></button>
+            </div>
+        </div>
+
+        <!-- Slide 5: Game Play and Results -->
+        <div id="slide-5" class="slide transition duration-500 ease-in-out transform">
+            <div class="slide-content">
+                <h2 class="text-3xl font-bold text-blue-300">4. 게임 플레이 및 결과</h2>
+                <h3 class="text-2xl font-semibold text-gray-300 mb-2">게임 진행</h3>
+                <ul class="mt-4">
+                    <li>
+                        <span class="font-bold">시작:</span> 모든 LED가 켜졌다가 꺼진 후, 부저와 LED를 통해 시작 알림 시퀀스가 재생됩니다.
+                    </li>
+                    <li>
+                        <span class="font-bold">순서 제시:</span> 무작위로 생성된 3개의 순서(색상, 소리)가 간헐적으로 재생됩니다.
+                    </li>
+                    <li>
+                        <span class="font-bold">사용자 입력:</span> 사용자는 제시된 순서에 맞춰 버튼을 누릅니다.
+                    </li>
+                    <li>
+                        <span class="font-bold">게임 기회:</span> 각 순서에 대한 입력 기회는 1회이며, 순서가 틀리거나 20초 안에 입력하지 못하면 게임이 즉시 종료됩니다.
+                    </li>
+                </ul>
+                <div class="mt-8">
+                    <h3 class="text-2xl font-semibold text-gray-300 mb-2">결과</h3>
+                    <ul class="mt-2 text-gray-300">
+                        <li><span class="font-bold">성공:</span> 모든 순서를 정확히 맞추면 '반짝반짝 작은별' 멜로디가 연주되고 모든 LED가 점등됩니다.</li>
+                        <li><span class="font-bold">실패:</span> 순서가 틀리거나 시간 초과 시, 모든 LED가 3회 깜박이며 실패를 알립니다.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer">
+                <button onclick="prevSlide()" class="nav-button">< 이전</button>
+                <span class="text-gray-400">페이지 4/5</span>
+                <button onclick="nextSlide()" class="nav-button">다음 ></button>
+            </div>
+        </div>
+
+        <!-- Slide 6: Conclusion -->
+        <div id="slide-6" class="slide transition duration-500 ease-in-out transform">
+            <div class="slide-content">
+                <h2 class="text-3xl font-bold text-blue-300">5. 요약 및 질의응답</h2>
+                <p class="mt-4">
+                    이 프로젝트는 아두이노와 간단한 부품들을 활용하여 구현한 기억력 게임으로, 하드웨어와 소프트웨어를 통합적으로 이해하는 데 도움이 됩니다.
+                </p>
+                <div class="mt-8">
+                    <h3 class="text-2xl font-semibold text-gray-300 mb-2">개선 및 확장 방안</h3>
+                    <ul class="mt-2 text-gray-300">
+                        <li>게임 난이도를 조절하여 더 긴 순서나 빠른 재생 속도를 적용할 수 있습니다.</li>
+                        <li>LCD 스크린을 추가하여 점수나 현재 상태를 시각적으로 보여줄 수 있습니다.</li>
+                        <li>멀티플레이어 기능을 추가하여 친구들과 함께 즐길 수 있도록 확장할 수 있습니다.</li>
+                    </ul>
+                </div>
+                <div class="mt-12 text-center text-xl font-bold text-blue-300">
+                    <p>질문 있으시면 자유롭게 말씀해주세요.</p>
+                </div>
+            </div>
+            <div class="footer">
+                <button onclick="prevSlide()" class="nav-button">< 이전</button>
+                <span class="text-gray-400">페이지 5/5</span>
+                <button onclick="nextSlide()" class="nav-button">다음 ></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
+                }
+            });
+            updateNavButtons();
+            updatePageNumber();
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        function updateNavButtons() {
+            const prevBtn = document.querySelector('.nav-button:first-child');
+            const nextBtn = document.querySelector('.nav-button:last-child');
+            if (currentSlide === 0) {
+                prevBtn.style.display = 'none';
+                if (slides.length > 1) {
+                    nextBtn.style.display = 'inline-block';
+                }
+            } else if (currentSlide === slides.length - 1) {
+                nextBtn.style.display = 'none';
+                prevBtn.style.display = 'inline-block';
+            } else {
+                prevBtn.style.display = 'inline-block';
+                nextBtn.style.display = 'inline-block';
+            }
+        }
+
+        function updatePageNumber() {
+            const pageSpan = document.querySelector('.footer span:nth-child(2)');
+            if (pageSpan) {
+                const pageNum = currentSlide > 0 ? currentSlide : 1;
+                pageSpan.textContent = `페이지 ${pageNum}/${slides.length - 1}`;
+            }
+        }
+
+        // Initialize
+        showSlide(currentSlide);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>
